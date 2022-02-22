@@ -3,4 +3,3 @@ node_modules/
 
 # Ignore built ts files
 dist/
-_dist/
