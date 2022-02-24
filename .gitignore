@@ -1,2 +1,6 @@
 node_modules/
 .env
+
+# Ignore built ts files
+dist/
+_dist/
