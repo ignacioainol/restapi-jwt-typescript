@@ -1,5 +1,9 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import app from './app';
 import './database';
+
+console.log(process.env.TESTING);
 
 function main() {
     app.listen(app.get('port'));
