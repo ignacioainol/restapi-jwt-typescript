@@ -11,15 +11,32 @@ export const signup = async (req: Request, res: Response) => {
         password: req.body.password,
     })
 
+    user.password = await user.encryptPassword(user.password);
+
     const savedUser = await user.save();
 
-    // jwt.sign({ _id: savedUser._id }, 'sdfsd');
+    const token: string = jwt.sign({ _id: savedUser._id }, process.env.TOKEN_SECRET || 'tokentest');
+    res.header('auth-token', token).json(savedUser);
 }
 
-export const signin = (req: Request, res: Response) => {
-    res.send('signin');
+export const signin = async (req: Request, res: Response) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+        return res.status(400).json("Email or Password is wrong");
+    }
+
+    const correctPassword: boolean = await user.validatePassword(req.body.password);
+    if (!correctPassword) return res.status(400).json('Invalid Password');
+
+    const token: string = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET || 'tokentest', {
+        expiresIn: '24h'
+    });
+    res.header('auth-token', token).json(user);
+
 }
 
-export const profile = (req: Request, res: Response) => {
-    res.send('profile');
+export const profile = async (req: Request, res: Response) => {
+    const user = await User.findById(req.userId, { password: 0 });
+    if (!user) return res.status(404).json('No user Found');
+    res.json(user);
 }

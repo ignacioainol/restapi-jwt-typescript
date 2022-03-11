@@ -95,5 +95,8 @@
   ],
   "exclude": [
     "node_modules"
+  ],
+  "files": [
+    "types.d.ts"
   ]
 }
